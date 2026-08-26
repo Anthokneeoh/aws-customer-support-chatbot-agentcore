@@ -48,9 +48,21 @@ def model_config(model_id):
 
 def load_prompt(prompt_path, faq_path):
     prompt = Path(prompt_path).read_text(encoding="utf-8")
-    if FAQ_PLACEHOLDER in prompt:
-        faq = Path(faq_path).read_text(encoding="utf-8")
-        prompt = prompt.replace(FAQ_PLACEHOLDER, faq)
+def load_prompt(prompt_path, faq_path):
+    prompt = Path(prompt_path).read_text(encoding="utf-8")
+
+    if FAQ_PLACEHOLDER not in prompt:
+        raise ValueError(
+            f"{prompt_path} does not contain the required {FAQ_PLACEHOLDER} placeholder."
+        )
+
+    faq = Path(faq_path).read_text(encoding="utf-8")
+
+    if not faq.strip():
+        raise ValueError(f"{faq_path} is empty.")
+
+    prompt = prompt.replace(FAQ_PLACEHOLDER, faq)
+
     return prompt
 
 
@@ -145,7 +157,9 @@ def main():
                 print(f"  create_harness failed ({exc}); retrying in 10s...")
                 time.sleep(10)
         else:
-            raise last_exc
+            if last_exc is not None:
+                raise last_exc
+            raise RuntimeError("create_harness failed after retries")
         # create_harness (like get_harness) nests the details under "harness".
         harness_id = harness["harness"]["harnessId"]
 

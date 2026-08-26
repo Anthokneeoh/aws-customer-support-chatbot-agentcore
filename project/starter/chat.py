@@ -27,6 +27,22 @@ from botocore.config import Config
 from botocore.eventstream import EventStream
 
 
+def model_config(model_id):
+    return {
+        "bedrockModelConfig": {
+            "modelId": model_id,
+            "temperature": 0.0,
+            "additionalParams": {
+                "additionalModelRequestFields": {
+                    "inferenceConfig": {
+                        "topK": 1
+                    }
+                }
+            },
+        }
+    }
+
+
 def event_stream(response):
     """Locate the streaming part of the invoke_harness response."""
     for value in response.values():
@@ -41,12 +57,13 @@ def invoke(rt, config, session_id, user_text, verbose=False):
     Returns the assistant's final text. Tool calls and tool results are
     handled server-side by the harness — we only watch them go by.
     """
+    model_id = config.get("model_id", "us.amazon.nova-pro-v1:0")
     response = rt.invoke_harness(
         harnessArn=config["harness_arn"],
         runtimeSessionId=session_id,
         # Pin the model on every invoke as well (belt and suspenders —
         # create_harness.py already pinned it on the harness).
-        model={"bedrockModelConfig": {"modelId": config.get("model_id", "us.amazon.nova-pro-v1:0")}},
+        model=model_config(model_id),
         # Attach the gateway so the model can use create_bug_report.
         tools=[{
             "type": "agentcore_gateway",

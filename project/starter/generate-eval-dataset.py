@@ -25,6 +25,22 @@ from botocore.config import Config
 from botocore.eventstream import EventStream
 
 
+def model_config(model_id):
+    return {
+        "bedrockModelConfig": {
+            "modelId": model_id,
+            "temperature": 0.0,
+            "additionalParams": {
+                "additionalModelRequestFields": {
+                    "inferenceConfig": {
+                        "topK": 1
+                    }
+                }
+            },
+        }
+    }
+
+
 def _event_stream(response):
     """Locate the streaming part of the invoke_harness response."""
     for value in response.values():
@@ -61,7 +77,7 @@ def invoke_harness_once(
         # keeps every test independent.
         runtimeSessionId=f"{uuid.uuid4()}-evalcase",
         # Pin the model explicitly — never rely on the harness default.
-        model={"bedrockModelConfig": {"modelId": model_id}},
+        model=model_config(model_id),
         tools=tools,
         messages=[{"role": "user", "content": [{"text": prompt}]}],
     )
