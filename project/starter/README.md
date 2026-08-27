@@ -240,16 +240,26 @@ The classifier output is used directly by the Condition node. Because routing de
 
 
 without explanations, punctuation, or additional text. This makes the classifier output suitable for downstream conditional routing.
+
+
 2. **Routing behavior depends on classification quality**
 The implementation demonstrated that a routing error can cause an otherwise correct response to be sent through the wrong path. The classifier therefore needs clear category definitions and strict output constraints. The final classifier configuration was adjusted so that customer support questions are consistently classified as `support` when they represent requests for help or information.
+
+
 3. **FAQ behavior is intentionally constrained**
 The FAQ path is designed to answer questions using the available FAQ content rather than inventing unsupported policies. When the requested information is not covered, the application directs the customer to human support. This reduces the risk of unsupported or fabricated customer-facing information.
+
+
 4. **Unsupported requests have an explicit fallback**
 Requests outside the supported FAQ scope or application capabilities are not answered with fabricated information. Instead, the application provides the human-support contact number:
 `1-800-555-0199`
 This provides a defined fallback behavior for unsupported customer requests.
+
+
 5. **Bug reports require sufficient information before tool execution**
 The bug-report path collects the required bug description, reproduction steps, and environment information before invoking the bug-report creation tool. This prevents the application from creating incomplete bug reports when the required information has not yet been supplied.
+
+
 6. **Automated evaluation provided final validation**
 The automated test suite successfully exercised all three required paths. The generated evaluation dataset was subsequently evaluated using Amazon Bedrock Evaluations with correctness as the evaluation metric. The final evaluation produced an average correctness score of 1.000 across 3 prompts, providing evidence that the final responses matched the expected behavior for the tested scenarios.
 
