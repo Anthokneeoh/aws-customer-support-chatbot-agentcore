@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "id": "t1_bug_report",
+      "prompt": "The checkout page crashes when I click the Place Order button. To reproduce it, open the checkout page, add an item to the cart, proceed to checkout, and click Place Order. The crash happens immediately after clicking the button. I am using Google Chrome version 151.0 on macOS 15.6.",
+      "expected": "The assistant should recognize this as a bug report. The description, reproduction steps, and environment information have all been explicitly provided, so it should call the bug-report creation tool and, after successful tool execution, confirm that the bug report was created and provide the returned ticket ID."
+    },
+    {
+      "id": "t2_platform_question",
+      "prompt": "How long does delivery take?",
+      "expected": "The assistant should answer using the FAQ. It should explain that estimated delivery times are shown at checkout and in the shipping confirmation email, and that processing typically takes 1–2 business days before dispatch."
+    },
+    {
+      "id": "t3_other_request",
+      "prompt": "Do you offer cryptocurrency payments?",
+      "expected": "The assistant should identify this as an unsupported request and direct the customer to human support at 1-800-555-0199. It should not invent a cryptocurrency payment policy."
+    }
+  ]
+}
